@@ -1,4 +1,3 @@
-
 Olá, estudante.
 
 A seguir, você dará continuidade ao desenvolvimento da sua solução através dos campos específicos para a resolução dos 3 desafios propostos, lembrando que eles se complementam.
@@ -95,11 +94,6 @@ Revisite a documentação do projeto desenvolvido na PIT I, peça *feedback* aos
 1. **Ambiente de Desenvolvimento**:
 
    - Configure um ambiente de desenvolvimento local utilizando Python e Streamlit.
-   - Crie um ambiente virtual com `venv` ou `virtualenv`:
-     ```bash
-     python -m venv venv
-     source venv/bin/activate  # No Windows: venv\Scripts\activate
-     ```
    - Instale as dependências necessárias listadas no arquivo `requirements.txt`:
      ```bash
      pip install -r requirements.txt
