@@ -27,6 +27,13 @@ def exibir_carrinho():
     else:
         st.write("Seu carrinho está vazio.")
 
+def limpar_carrinho():
+    if os.path.exists("pedidos_temp.xlsx"):
+        os.remove("pedidos_temp.xlsx")
+        st.write("Carrinho limpo com sucesso!")
+    else:
+        st.write("O carrinho já está vazio.")
+
 def finalizar_compra():
     if os.path.exists("pedidos_temp.xlsx"):
         pedidos_df = pd.read_excel("pedidos_temp.xlsx", sheet_name="itens_pedido")
