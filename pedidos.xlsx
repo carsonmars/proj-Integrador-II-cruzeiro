@@ -1,0 +1,9 @@
+# Este arquivo conterá todos os pedidos.
+
+import pandas as pd
+
+# Crie um DataFrame vazio com as colunas necessárias
+pedidos_df = pd.DataFrame(columns=["pedido_id", "item_id", "quantidade"])
+
+# Salve o DataFrame como um arquivo Excel
+pedidos_df.to_excel("pedidos.xlsx", index=False)

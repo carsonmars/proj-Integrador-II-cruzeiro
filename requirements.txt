@@ -1,0 +1,7 @@
+# Este arquivo listará as dependências do projeto.
+streamlit
+pandas
+numpy
+matplotlib
+requests
+flake8
