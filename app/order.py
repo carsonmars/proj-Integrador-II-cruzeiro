@@ -8,10 +8,16 @@ from datetime import datetime
 def adicionar_ao_carrinho(item_id, quantidade):
     if os.path.exists("pedidos_temp.xlsx"):
         pedidos_df = pd.read_excel("pedidos_temp.xlsx", sheet_name="itens_pedido")
+        if item_id in pedidos_df["produto_id"].values:
+            pedidos_df.loc[pedidos_df["produto_id"] == item_id, "quantidade"] += quantidade
+        else:
+            novo_pedido = pd.DataFrame({"pedido_id": [1], "produto_id": [item_id], "quantidade": [quantidade]})
+            pedidos_df = pd.concat([pedidos_df, novo_pedido], ignore_index=True)
     else:
         pedidos_df = pd.DataFrame(columns=["pedido_id", "produto_id", "quantidade"])
-    novo_pedido = pd.DataFrame({"pedido_id": [1], "produto_id": [item_id], "quantidade": [quantidade]})
-    pedidos_df = pd.concat([pedidos_df, novo_pedido], ignore_index=True)
+        novo_pedido = pd.DataFrame({"pedido_id": [1], "produto_id": [item_id], "quantidade": [quantidade]})
+        pedidos_df = pd.concat([pedidos_df, novo_pedido], ignore_index=True)
+    
     with pd.ExcelWriter("pedidos_temp.xlsx") as writer:
         pedidos_df.to_excel(writer, sheet_name="itens_pedido", index=False)
     st.write(f"{quantidade}x item adicionado ao carrinho.")
@@ -40,11 +46,16 @@ def finalizar_compra():
         pedidos_df = pd.read_excel("pedidos_temp.xlsx", sheet_name="itens_pedido")
         if os.path.exists("pedidos.xlsx"):
             try:
-                with pd.ExcelWriter("pedidos.xlsx", mode="a", engine="openpyxl") as writer:
-                    pedidos_df.to_excel(writer, sheet_name="itens_pedido", index=False, header=False, startrow=writer.sheets["itens_pedido"].max_row)
+                pedidos_final_df = pd.read_excel("pedidos.xlsx", sheet_name="itens_pedido")
+                novo_pedido_id = pedidos_final_df["pedido_id"].max() + 1
+                pedidos_df["pedido_id"] = novo_pedido_id
+                pedidos_final_df = pd.concat([pedidos_final_df, pedidos_df], ignore_index=True)
+                with pd.ExcelWriter("pedidos.xlsx", engine="openpyxl") as writer:
+                    pedidos_final_df.to_excel(writer, sheet_name="itens_pedido", index=False)
             except Exception as e:
                 st.error(f"Erro ao salvar o pedido: {e}")
         else:
+            pedidos_df["pedido_id"] = 1
             with pd.ExcelWriter("pedidos.xlsx", engine="openpyxl") as writer:
                 pedidos_df.to_excel(writer, sheet_name="itens_pedido", index=False)
         os.remove("pedidos_temp.xlsx")
