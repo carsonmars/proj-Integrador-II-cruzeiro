@@ -3,6 +3,7 @@
 import streamlit as st
 import pandas as pd
 import os
+from datetime import datetime
 
 def adicionar_ao_carrinho(item_id, quantidade):
     if os.path.exists("pedidos_temp.xlsx"):
@@ -39,7 +40,7 @@ def finalizar_compra():
         pedidos_df = pd.read_excel("pedidos_temp.xlsx", sheet_name="itens_pedido")
         if os.path.exists("pedidos.xlsx"):
             try:
-                with pd.ExcelWriter("pedidos.xlsx", mode="a", engine="openpyxl", if_sheet_exists="overlay") as writer:
+                with pd.ExcelWriter("pedidos.xlsx", mode="a", engine="openpyxl") as writer:
                     pedidos_df.to_excel(writer, sheet_name="itens_pedido", index=False, header=False, startrow=writer.sheets["itens_pedido"].max_row)
             except Exception as e:
                 st.error(f"Erro ao salvar o pedido: {e}")
