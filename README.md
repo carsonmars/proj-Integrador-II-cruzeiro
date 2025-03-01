@@ -5,6 +5,7 @@ Este projeto é uma aplicação para gerenciar o cardápio e pedidos de uma cafe
 ## Estrutura do Projeto
 
 ```
+<<<<<<< HEAD
 cafeteria_project/
 ├── app/
 │   ├── __init__.py
@@ -17,6 +18,18 @@ cafeteria_project/
 ├── README.md
 ├── setup.py
 └── main.py
+=======
+source/
+├── __init__.py
+├── main.py
+├── menu.py
+├── order.py
+├── test_menu.py
+├── test_order.py
+├── requirements.txt
+├── README.md
+└── setup.py
+>>>>>>> 4c5fb779c366030e9f9fc4851efaf3122cbc0bc0
 ```
 
 ## Configuração do Ambiente
