@@ -2,8 +2,13 @@
 
 import pandas as pd
 
-# Crie um DataFrame vazio com as colunas necessárias
-pedidos_df = pd.DataFrame(columns=["pedido_id", "item_id", "quantidade"])
+# Crie DataFrames vazios com as colunas necessárias
+pedidos_df = pd.DataFrame(columns=["pedido_id", "data_pedido", "cliente_id"])
+produtos_df = pd.DataFrame(columns=["produto_id", "nome", "descricao", "preco"])
+itens_pedido_df = pd.DataFrame(columns=["pedido_id", "produto_id", "quantidade"])
 
-# Salve o DataFrame como um arquivo Excel
-pedidos_df.to_excel("pedidos.xlsx", index=False)
+# Salve os DataFrames como arquivos Excel
+with pd.ExcelWriter("pedidos.xlsx") as writer:
+    pedidos_df.to_excel(writer, sheet_name="pedidos", index=False)
+    produtos_df.to_excel(writer, sheet_name="produtos", index=False)
+    itens_pedido_df.to_excel(writer, sheet_name="itens_pedido", index=False)

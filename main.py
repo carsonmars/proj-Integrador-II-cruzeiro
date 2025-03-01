@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 from app.menu import exibir_menu_como_cards
-from app.order import adicionar_ao_carrinho, fazer_pedido, finalizar_compra, exibir_carrinho
+from app.order import adicionar_ao_carrinho, finalizar_compra, exibir_carrinho
 
 st.set_page_config(page_title="Cafeteria Sabor & Aroma", layout="wide")
 
@@ -14,9 +14,6 @@ exibir_menu_como_cards()
 # Exibir o carrinho de compras
 exibir_carrinho()
 
-# Botões de navegação
-if st.button("Fazer Pedido"):
-    fazer_pedido()
-
+# Botão para finalizar a compra
 if st.button("Finalizar Compra"):
     finalizar_compra()
