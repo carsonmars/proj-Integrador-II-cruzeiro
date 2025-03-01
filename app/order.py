@@ -47,7 +47,7 @@ def finalizar_compra():
         if os.path.exists("pedidos.xlsx"):
             try:
                 pedidos_final_df = pd.read_excel("pedidos.xlsx", sheet_name="itens_pedido")
-                novo_pedido_id = pedidos_final_df["pedido_id"].max() + 1
+                novo_pedido_id = pedidos_final_df["pedido_id"].max() + 1 if not pedidos_final_df.empty else 1
                 pedidos_df["pedido_id"] = novo_pedido_id
                 pedidos_final_df = pd.concat([pedidos_final_df, pedidos_df], ignore_index=True)
                 with pd.ExcelWriter("pedidos.xlsx", engine="openpyxl") as writer:
