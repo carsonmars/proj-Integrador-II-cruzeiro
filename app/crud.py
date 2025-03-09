@@ -86,100 +86,34 @@ def exibir_cardapio():
     conn.close()
 
 # Adiciona um item ao cardápio.
-def adicionar_item():
-    st.subheader("Adicionar Item ao Cardápio")
-    nome = st.text_input("Nome do Item", key="nome_item")
-    descricao = st.text_area("Descrição", key="descricao_item")
-    preco = st.number_input("Preço", min_value=0.0, format="%.2f", key="preco_item")
-    imagem = st.file_uploader("Envie uma imagem", type=["jpg", "jpeg", "png"], key="imagem_item")
-    estoque = st.number_input("Estoque", min_value=0, key="estoque_item")
-    
+def adicionar_item(nome, descricao, preco, imagem_path, estoque, categoria_id):
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute("SELECT id_categoria, nome FROM Categoria")
-    categorias = cursor.fetchall()
+    cursor.execute("INSERT INTO Produto (nome, descricao, preco, imagem, estoque, id_categoria) VALUES (?, ?, ?, ?, ?, ?)", (nome, descricao, preco, imagem_path, estoque, categoria_id))
+    conn.commit()
     conn.close()
-    
-    categoria_id = st.selectbox("Categoria", [categoria[0] for categoria in categorias], format_func=lambda x: next(categoria[1] for categoria in categorias if categoria[0] == x), key="categoria_item")
-    
-    if st.button("Adicionar Item"):
-        if imagem is not None:
-            if not os.path.exists("images"):
-                os.makedirs("images")
-            imagem_path = os.path.join("images", imagem.name)
-            with open(imagem_path, "wb") as f:
-                f.write(imagem.getbuffer())
-        else:
-            imagem_path = ""
-        
-        conn = conectar()
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO Produto (nome, descricao, preco, imagem, estoque, id_categoria) VALUES (?, ?, ?, ?, ?, ?)", (nome, descricao, preco, imagem_path, estoque, categoria_id))
-        conn.commit()
-        conn.close()
-        st.success("Item adicionado com sucesso!")
-        # Limpar o formulário
-        st.session_state["nome_item"] = ""
-        st.session_state["descricao_item"] = ""
-        st.session_state["preco_item"] = 0.0
-        st.session_state["imagem_item"] = None
-        st.session_state["estoque_item"] = 0
-        st.session_state["categoria_item"] = None
-        # Atualizar a exibição do cardápio
-        exibir_cardapio()
+    st.success("Item adicionado com sucesso!")
+    # Atualizar a exibição do cardápio
+    exibir_cardapio()
 
 # Edita um item do cardápio.
-def editar_item():
-    st.subheader("Editar Item do Cardápio")
+def editar_item(item_id, nome, descricao, preco, imagem_path, estoque, categoria_id):
     conn = conectar()
     cursor = conn.cursor()
-    
-    cursor.execute("SELECT * FROM Produto")
-    cardapio = cursor.fetchall()
-    item_id = st.selectbox("Selecione o Item", [item[0] for item in cardapio])
-    item = next(item for item in cardapio if item[0] == item_id)
-    
-    nome = st.text_input("Nome do Item", value=item[1], key="nome_item_editar")
-    descricao = st.text_area("Descrição", value=item[2], key="descricao_item_editar")
-    preco = st.number_input("Preço", min_value=0.0, format="%.2f", value=item[3], key="preco_item_editar")
-    imagem = st.file_uploader("Envie uma nova imagem", type=["jpg", "jpeg", "png"], key="imagem_item_editar")
-    estoque = st.number_input("Estoque", min_value=0, value=item[5], key="estoque_item_editar")
-    
-    cursor.execute("SELECT id_categoria, nome FROM Categoria")
-    categorias = cursor.fetchall()
-    categoria_id = st.selectbox("Categoria", [categoria[0] for categoria in categorias], index=[categoria[0] for categoria in categorias].index(item[6]), format_func=lambda x: next(categoria[1] for categoria in categorias if categoria[0] == x), key="categoria_item_editar")
-    
-    if st.button("Salvar Alterações"):
-        if imagem is not None:
-            if not os.path.exists("images"):
-                os.makedirs("images")
-            imagem_path = os.path.join("images", imagem.name)
-            with open(imagem_path, "wb") as f:
-                f.write(imagem.getbuffer())
-        else:
-            imagem_path = item[4]
-        
-        cursor.execute("UPDATE Produto SET nome = ?, descricao = ?, preco = ?, imagem = ?, estoque = ?, id_categoria = ? WHERE id_produto = ?", (nome, descricao, preco, imagem_path, estoque, categoria_id, item_id))
-        conn.commit()
-        conn.close()
-        st.success("Item atualizado com sucesso!")
-        # Atualizar a exibição do cardápio
-        exibir_cardapio()
+    cursor.execute("UPDATE Produto SET nome = ?, descricao = ?, preco = ?, imagem = ?, estoque = ?, id_categoria = ? WHERE id_produto = ?", (nome, descricao, preco, imagem_path, estoque, categoria_id, item_id))
+    conn.commit()
+    conn.close()
+    st.success("Item atualizado com sucesso!")
+    # Atualizar a exibição do cardápio
+    exibir_cardapio()
 
 # Remove um item do cardápio.
-def remover_item():
-    st.subheader("Remover Item do Cardápio")
+def remover_item(item_id):
     conn = conectar()
     cursor = conn.cursor()
-    
-    cursor.execute("SELECT * FROM Produto")
-    cardapio = cursor.fetchall()
-    item_id = st.selectbox("Selecione o Item", [item[0] for item in cardapio])
-    
-    if st.button("Remover"):
-        cursor.execute("DELETE FROM Produto WHERE id_produto = ?", (item_id,))
-        conn.commit()
-        conn.close()
-        st.success("Item removido com sucesso!")
-        # Atualizar a exibição do cardápio
-        exibir_cardapio()
+    cursor.execute("DELETE FROM Produto WHERE id_produto = ?", (item_id,))
+    conn.commit()
+    conn.close()
+    st.success("Item removido com sucesso!")
+    # Atualizar a exibição do cardápio
+    exibir_cardapio()

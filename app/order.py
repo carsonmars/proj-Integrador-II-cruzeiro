@@ -82,9 +82,11 @@ def adicionar_ao_carrinho(produto_id, quantidade):
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute("SELECT preco FROM Produto WHERE id_produto = ?", (produto_id,))
-    preco_unitario = cursor.fetchone()[0]
-    cursor.execute("INSERT INTO ItemPedido (id_produto, quantidade, preco_unitario) VALUES (?, ?, ?)", (produto_id, quantidade, preco_unitario))
-    conn.commit()
+    produto = cursor.fetchone()
+    if produto:
+        preco_unitario = produto[0]
+        cursor.execute("INSERT INTO ItemPedido (id_produto, quantidade, preco_unitario) VALUES (?, ?, ?)", (produto_id, quantidade, preco_unitario))
+        conn.commit()
     conn.close()
 
 # Exibe o carrinho de compras.

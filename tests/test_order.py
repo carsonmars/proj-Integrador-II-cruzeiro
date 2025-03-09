@@ -9,6 +9,8 @@ class TestOrder(unittest.TestCase):
         cursor = conn.cursor()
         cursor.execute("DELETE FROM ItemPedido")
         cursor.execute("DELETE FROM Pedido")
+        cursor.execute("DELETE FROM Produto")
+        cursor.execute("INSERT INTO Produto (nome, descricao, preco, imagem, estoque, id_categoria) VALUES ('Café Expresso', 'Café forte e encorpado', 5.00, '', 100, 1)")
         conn.commit()
         conn.close()
 
