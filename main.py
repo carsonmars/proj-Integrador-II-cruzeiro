@@ -72,7 +72,6 @@ elif st.session_state.menu_ativo == 'Administração':
                 cursor = conn.cursor()
                 cursor.execute("SELECT id_categoria, nome FROM Categoria")
                 categorias = cursor.fetchall()
-                conn.close()
                 
                 categoria_id = st.selectbox("Categoria", [categoria[0] for categoria in categorias], format_func=lambda x: next(categoria[1] for categoria in categorias if categoria[0] == x), key="categoria_item")
                 
@@ -87,10 +86,47 @@ elif st.session_state.menu_ativo == 'Administração':
                         imagem_path = ""
                     
                     adicionar_item(nome, descricao, preco, imagem_path, estoque, categoria_id)
+                conn.close()
             elif opcao == "Editar Item":
-                editar_item()
+                conn = conectar()
+                cursor = conn.cursor()
+                cursor.execute("SELECT id_produto, nome, descricao, preco, imagem, estoque, id_categoria FROM Produto")
+                produtos = cursor.fetchall()
+                
+                item_id = st.selectbox("Selecione o Item", [produto[0] for produto in produtos])
+                produto = next(produto for produto in produtos if produto[0] == item_id)
+                
+                nome = st.text_input("Nome do Item", value=produto[1], key="nome_item_editar")
+                descricao = st.text_area("Descrição", value=produto[2], key="descricao_item_editar")
+                preco = st.number_input("Preço", min_value=0.0, format="%.2f", value=produto[3], key="preco_item_editar")
+                imagem = st.file_uploader("Envie uma nova imagem", type=["jpg", "jpeg", "png"], key="imagem_item_editar")
+                estoque = st.number_input("Estoque", min_value=0, value=produto[5], key="estoque_item_editar")
+                
+                cursor.execute("SELECT id_categoria, nome FROM Categoria")
+                categorias = cursor.fetchall()
+                categoria_id = st.selectbox("Categoria", [categoria[0] for categoria in categorias], index=[categoria[0] for categoria in categorias].index(produto[6]), format_func=lambda x: next(categoria[1] for categoria in categorias if categoria[0] == x), key="categoria_item_editar")
+                
+                if st.button("Salvar Alterações"):
+                    if imagem is not None:
+                        if not os.path.exists("images"):
+                            os.makedirs("images")
+                        imagem_path = os.path.join("images", imagem.name)
+                        with open(imagem_path, "wb") as f:
+                            f.write(imagem.getbuffer())
+                    else:
+                        imagem_path = produto[4]
+                    
+                    editar_item(item_id, nome, descricao, preco, imagem_path, estoque, categoria_id)
+                conn.close()
             elif opcao == "Remover Item":
-                remover_item()
+                conn = conectar()
+                cursor = conn.cursor()
+                cursor.execute("SELECT id_produto, nome FROM Produto")
+                produtos = cursor.fetchall()
+                
+                item_id = st.selectbox("Selecione o Item", [produto[0] for produto in produtos])
+                remover_item(item_id)
+                conn.close()
             exibir_cardapio()
         elif st.session_state.submenu_ativo == 'Categoria de Produtos':
             st.header("Gerenciamento de Categoria de Produtos")
