@@ -125,7 +125,8 @@ elif st.session_state.menu_ativo == 'Administração':
                 produtos = cursor.fetchall()
                 
                 item_id = st.selectbox("Selecione o Item", [produto[0] for produto in produtos])
-                remover_item(item_id)
+                if st.button("Remover Item"):
+                    remover_item(item_id)
                 conn.close()
             exibir_cardapio()
         elif st.session_state.submenu_ativo == 'Categoria de Produtos':

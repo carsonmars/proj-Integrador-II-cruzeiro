@@ -81,19 +81,27 @@ def remover_pedido():
 def adicionar_ao_carrinho(produto_id, quantidade):
     conn = conectar()
     cursor = conn.cursor()
+    
     cursor.execute("SELECT preco FROM Produto WHERE id_produto = ?", (produto_id,))
-    produto = cursor.fetchone()
-    if produto:
-        preco_unitario = produto[0]
-        cursor.execute("SELECT quantidade FROM ItemPedido WHERE id_produto = ? AND id_pedido IS NULL", (produto_id,))
-        item = cursor.fetchone()
-        if item:
-            nova_quantidade = item[0] + quantidade
-            cursor.execute("UPDATE ItemPedido SET quantidade = ? WHERE id_produto = ? AND id_pedido IS NULL", (nova_quantidade, produto_id))
-        else:
-            cursor.execute("INSERT INTO ItemPedido (id_produto, quantidade, preco_unitario) VALUES (?, ?, ?)", (produto_id, quantidade, preco_unitario))
-        conn.commit()
+    result = cursor.fetchone()
+    if result is None:
+        st.error("Produto não encontrado.")
+        return
+    
+    preco_unitario = result[0]
+    
+    cursor.execute("SELECT * FROM ItemPedido WHERE id_produto = ?", (produto_id,))
+    item = cursor.fetchone()
+    
+    if item:
+        cursor.execute("UPDATE ItemPedido SET quantidade = quantidade + ? WHERE id_produto = ?", (quantidade, produto_id))
+    else:
+        cursor.execute("INSERT INTO ItemPedido (id_pedido, id_produto, quantidade, preco_unitario) VALUES (?, ?, ?, ?)", 
+                       (1, produto_id, quantidade, preco_unitario))
+    
+    conn.commit()
     conn.close()
+    st.write(f"{quantidade}x item adicionado ao carrinho.")
 
 # Exibe o carrinho de compras.
 def exibir_carrinho():
