@@ -1,4 +1,5 @@
 import streamlit as st
+import os  # Importar o módulo os
 
 # Configurações iniciais do Streamlit
 st.set_page_config(page_title="Cafeteria Sabor & Aroma", layout="wide")
@@ -6,7 +7,7 @@ st.set_page_config(page_title="Cafeteria Sabor & Aroma", layout="wide")
 from app.menu import exibir_menu_como_cards
 from app.order import adicionar_ao_carrinho, finalizar_compra, exibir_carrinho, limpar_carrinho
 from app.crud import adicionar_item, editar_item, remover_item, exibir_cardapio, adicionar_categoria, exibir_categorias, editar_categoria, remover_categoria
-from app.db import criar_tabelas, conectar  # Importar a função conectar
+from app.db import criar_tabelas, conectar  # Importar a função conectar e limpar_tabelas
 
 st.title("Bem-vindo à Cafeteria Sabor & Aroma")
 

@@ -72,25 +72,6 @@ def criar_tabelas():
             )
             """)
             
-            # Insere os dados na tabela Produto
-            produtos = [
-                ("Café Expresso", "Café forte e encorpado.", 5.00, "", 100, 1),
-                ("Cappuccino", "Café com espuma de leite e cacau.", 8.00, "", 100, 1),
-                ("Latte", "Café com leite vaporizado.", 7.50, "", 100, 1),
-                ("Chocolate Quente com Especiarias", "Chocolate quente com canela e cardamomo.", 9.00, "", 100, 6),
-                ("Chá de Ervas Orgânicas", "Chá natural com ervas selecionadas.", 6.00, "", 100, 3),
-                ("Frappuccino de Caramelo", "Café gelado com calda de caramelo.", 10.00, "", 100, 2),
-                ("Smoothie de Frutas Tropicais", "Mix de frutas tropicais com iogurte.", 12.00, "", 100, 4),
-                ("Chá Gelado com Limão e Hortelã", "Chá gelado refrescante com toque cítrico.", 7.00, "", 100, 3),
-                ("Refresco de Verão com Frutas Tropicais", "Bebida gelada com frutas da estação.", 8.50, "", 100, 6),
-                ("Latte com Leite de Amêndoas", "Café com leite de amêndoas.", 8.00, "", 100, 1)
-            ]
-            
-            cursor.executemany("""
-            INSERT INTO Produto (nome, descricao, preco, imagem, estoque, id_categoria)
-            VALUES (?, ?, ?, ?, ?, ?)
-            """, produtos)
-            
             conn.commit()
             conn.close()
             break

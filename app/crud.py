@@ -32,8 +32,7 @@ def adicionar_categoria():
         conn.close()
         st.success("Categoria adicionada com sucesso!")
         # Limpar o formulário
-        st.session_state["nome_categoria"] = ""
-        st.session_state["descricao_categoria"] = ""
+        st.rerun()
 
 # Edita uma categoria do cardápio.
 def editar_categoria():
