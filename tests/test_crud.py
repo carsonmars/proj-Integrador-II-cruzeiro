@@ -24,10 +24,16 @@ class TestCrud(unittest.TestCase):
 
     def test_editar_item(self):
         adicionar_item("Café Expresso", "Café forte e encorpado", 5.00, "url_imagem", 10, 1)
-        editar_item(1, "Café Expresso", "Café forte e encorpado com leite", 6.00, "url_imagem", 10, 1)
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Produto WHERE id_produto = 1")
+        cursor.execute("SELECT id_produto FROM Produto WHERE nome = 'Café Expresso'")
+        item_id = cursor.fetchone()[0]
+        conn.close()
+        
+        editar_item(item_id, "Café Expresso", "Café forte e encorpado com leite", 6.00, "url_imagem", 10, 1)
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Produto WHERE id_produto = ?", (item_id,))
         item = cursor.fetchone()
         conn.close()
         self.assertEqual(item[2], "Café forte e encorpado com leite")
@@ -35,10 +41,16 @@ class TestCrud(unittest.TestCase):
 
     def test_remover_item(self):
         adicionar_item("Café Expresso", "Café forte e encorpado", 5.00, "url_imagem", 10, 1)
-        remover_item(1)
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Produto WHERE id_produto = 1")
+        cursor.execute("SELECT id_produto FROM Produto WHERE nome = 'Café Expresso'")
+        item_id = cursor.fetchone()[0]
+        conn.close()
+        
+        remover_item(item_id)
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Produto WHERE id_produto = ?", (item_id,))
         item = cursor.fetchone()
         conn.close()
         self.assertIsNone(item)

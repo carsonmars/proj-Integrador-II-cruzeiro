@@ -15,6 +15,13 @@ class TestOrder(unittest.TestCase):
         conn.close()
 
     def test_adicionar_ao_carrinho(self):
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Produto WHERE id = 1")
+        produto = cursor.fetchone()
+        conn.close()
+        self.assertIsNotNone(produto)
+        
         adicionar_ao_carrinho(1, 2)
         conn = conectar()
         cursor = conn.cursor()
