@@ -85,7 +85,13 @@ def adicionar_ao_carrinho(produto_id, quantidade):
     produto = cursor.fetchone()
     if produto:
         preco_unitario = produto[0]
-        cursor.execute("INSERT INTO ItemPedido (id_produto, quantidade, preco_unitario) VALUES (?, ?, ?)", (produto_id, quantidade, preco_unitario))
+        cursor.execute("SELECT quantidade FROM ItemPedido WHERE id_produto = ? AND id_pedido IS NULL", (produto_id,))
+        item = cursor.fetchone()
+        if item:
+            nova_quantidade = item[0] + quantidade
+            cursor.execute("UPDATE ItemPedido SET quantidade = ? WHERE id_produto = ? AND id_pedido IS NULL", (nova_quantidade, produto_id))
+        else:
+            cursor.execute("INSERT INTO ItemPedido (id_produto, quantidade, preco_unitario) VALUES (?, ?, ?)", (produto_id, quantidade, preco_unitario))
         conn.commit()
     conn.close()
 
@@ -104,7 +110,7 @@ def exibir_carrinho():
 def limpar_carrinho():
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM ItemPedido")
+    cursor.execute("DELETE FROM ItemPedido WHERE id_pedido IS NULL")
     conn.commit()
     conn.close()
 

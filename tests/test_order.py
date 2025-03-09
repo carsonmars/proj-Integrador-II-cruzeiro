@@ -10,14 +10,14 @@ class TestOrder(unittest.TestCase):
         cursor.execute("DELETE FROM ItemPedido")
         cursor.execute("DELETE FROM Pedido")
         cursor.execute("DELETE FROM Produto")
-        cursor.execute("INSERT INTO Produto (nome, descricao, preco, imagem, estoque, id_categoria) VALUES ('Café Expresso', 'Café forte e encorpado', 5.00, '', 100, 1)")
+        cursor.execute("INSERT INTO Produto (id_produto, nome, descricao, preco, imagem, estoque, id_categoria) VALUES (1, 'Café Expresso', 'Café forte e encorpado', 5.00, '', 100, 1)")
         conn.commit()
         conn.close()
 
     def test_adicionar_ao_carrinho(self):
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Produto WHERE id = 1")
+        cursor.execute("SELECT * FROM Produto WHERE id_produto = 1")
         produto = cursor.fetchone()
         conn.close()
         self.assertIsNotNone(produto)
@@ -30,6 +30,15 @@ class TestOrder(unittest.TestCase):
         conn.close()
         self.assertIsNotNone(item)
         self.assertEqual(item[2], 2)
+
+        adicionar_ao_carrinho(1, 1)
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM ItemPedido WHERE id_produto = 1")
+        item = cursor.fetchone()
+        conn.close()
+        self.assertIsNotNone(item)
+        self.assertEqual(item[2], 3)
 
     def test_limpar_carrinho(self):
         adicionar_ao_carrinho(1, 2)
