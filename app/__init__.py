@@ -1,3 +1,0 @@
-# Arquivo removido.
-
-
